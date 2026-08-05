@@ -146,6 +146,13 @@ dependencies {
     testImplementation 'org.testcontainers:testcontainers-junit-jupiter:2.0.2'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+    implementation 'org.hibernate.orm:hibernate-community-dialects:6.4.3.Final'
+    testImplementation 'org.testcontainers:postgresql:1.19.4'
+
 
 
 }
