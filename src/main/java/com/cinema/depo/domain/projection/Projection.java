@@ -17,18 +17,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Projection {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+  @Id @GeneratedValue private UUID id;
 
-    private Instant datetime;
-    private BigDecimal seatPrice;
+  private Instant datetime;
+  private BigDecimal seatPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+  @ManyToOne
+  @JoinColumn(name = "room_id", nullable = false)
+  private Room room;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;
+  @ManyToOne
+  @JoinColumn(name = "movie_id", nullable = false)
+  private Movie movie;
 }
