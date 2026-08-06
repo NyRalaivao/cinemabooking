@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/seats")
 public class SeatController {
 
-    private final SeatRepository seatRepository;
+  private final SeatRepository seatRepository;
 
-    @GetMapping
-    public ResponseEntity<List<Seat>> getSeatsByRoom(@RequestParam UUID roomId) {
-        return ResponseEntity.ok(seatRepository.findByRoomId(roomId));
-    }
+  @GetMapping
+  public ResponseEntity<List<Seat>> getSeatsByRoom(@RequestParam UUID roomId) {
+    return ResponseEntity.ok(seatRepository.findByRoomId(roomId));
+  }
 
-    @PutMapping
-    @PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<Seat> createOrUpdateSeat(@RequestBody Seat seat) {
-        return ResponseEntity.ok(seatRepository.save(seat));
-    }
+  @PutMapping
+  @PreAuthorize("hasRole('MANAGER')")
+  public ResponseEntity<Seat> createOrUpdateSeat(@RequestBody Seat seat) {
+    return ResponseEntity.ok(seatRepository.save(seat));
+  }
 }

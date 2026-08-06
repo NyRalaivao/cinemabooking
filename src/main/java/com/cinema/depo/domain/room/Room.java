@@ -15,13 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Room {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+  @Id @GeneratedValue private UUID id;
 
-    private String number;
-    private int capacity;
+  private String number;
+  private int capacity;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Seat> seats = new ArrayList<>();
+  @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Seat> seats = new ArrayList<>();
 }

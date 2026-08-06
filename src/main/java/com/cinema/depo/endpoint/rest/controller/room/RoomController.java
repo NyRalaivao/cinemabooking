@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rooms")
 public class RoomController {
 
-    private final RoomRepository roomRepository;
+  private final RoomRepository roomRepository;
 
-    @GetMapping
-    public ResponseEntity<List<Room>> getRooms() {
-        return ResponseEntity.ok(roomRepository.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<Room>> getRooms() {
+    return ResponseEntity.ok(roomRepository.findAll());
+  }
 
-    @PutMapping
-    @PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<Room> createOrUpdateRoom(@RequestBody Room room) {
-        return ResponseEntity.ok(roomRepository.save(room));
-    }
+  @PutMapping
+  @PreAuthorize("hasRole('MANAGER')")
+  public ResponseEntity<Room> createOrUpdateRoom(@RequestBody Room room) {
+    return ResponseEntity.ok(roomRepository.save(room));
+  }
 }

@@ -13,13 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Seat {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+  @Id @GeneratedValue private UUID id;
 
-    private String number;
+  private String number;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+  @ManyToOne
+  @JoinColumn(name = "room_id", nullable = false)
+  private Room room;
 }
