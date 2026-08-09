@@ -1,0 +1,6 @@
+package com.cinema.depo.domain.projection;
+
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProjectionRepository extends JpaRepository<Projection, UUID> {}
