@@ -16,51 +16,53 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class AuthControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Test
-    void shouldRegisterThenLoginAndReceiveToken() throws Exception {
-        String registerBody = """
-        {"email":"test-junit@cinema.com","password":"motdepasse123","firstName":"Test","lastName":"Junit"}
-        """;
+  @Test
+  void shouldRegisterThenLoginAndReceiveToken() throws Exception {
+    String registerBody =
+        """
+{"email":"test-junit@cinema.com","password":"motdepasse123","firstName":"Test","lastName":"Junit"}
+""";
 
-        // Étape 1 : inscription — on attend un 200
-        mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(registerBody))
-                .andExpect(status().isOk());
+    // Étape 1 : inscription — on attend un 200
+    mockMvc
+        .perform(
+            post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(registerBody))
+        .andExpect(status().isOk());
 
-        String loginBody = """
+    String loginBody =
+        """
         {"email":"test-junit@cinema.com","password":"motdepasse123"}
         """;
 
-        // Étape 2 : connexion — on attend un 200 avec un token non-vide dans la réponse
-        mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token", notNullValue()));
-    }
+    // Étape 2 : connexion — on attend un 200 avec un token non-vide dans la réponse
+    mockMvc
+        .perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(loginBody))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token", notNullValue()));
+  }
 
-    @Test
-    void shouldRejectLoginWithWrongPassword() throws Exception {
-        String registerBody = """
-        {"email":"test-wrongpass@cinema.com","password":"bonmotdepasse","firstName":"Test","lastName":"Junit"}
-        """;
-        mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(registerBody))
-                .andExpect(status().isOk());
+  @Test
+  void shouldRejectLoginWithWrongPassword() throws Exception {
+    String registerBody =
+        """
+{"email":"test-wrongpass@cinema.com","password":"bonmotdepasse","firstName":"Test","lastName":"Junit"}
+""";
+    mockMvc
+        .perform(
+            post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(registerBody))
+        .andExpect(status().isOk());
 
-        String wrongLoginBody = """
+    String wrongLoginBody =
+        """
         {"email":"test-wrongpass@cinema.com","password":"mauvais-mot-de-passe"}
         """;
 
-        // On attend un 401, pas un 200
-        mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(wrongLoginBody))
-                .andExpect(status().isUnauthorized());
-    }
+    // On attend un 401, pas un 200
+    mockMvc
+        .perform(
+            post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(wrongLoginBody))
+        .andExpect(status().isUnauthorized());
+  }
 }

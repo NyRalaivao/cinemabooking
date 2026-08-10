@@ -25,73 +25,84 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureMockMvc
 class SeatControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private UserRepository userRepository;
-    @Autowired private RoomRepository roomRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired private MockMvc mockMvc;
+  @Autowired private UserRepository userRepository;
+  @Autowired private RoomRepository roomRepository;
+  @Autowired private PasswordEncoder passwordEncoder;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private String createUserAndLogin(String email, UserRole role) throws Exception {
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode("motdepasse123"));
-        user.setRole(role);
-        userRepository.save(user);
+  private String createUserAndLogin(String email, UserRole role) throws Exception {
+    User user = new User();
+    user.setEmail(email);
+    user.setPassword(passwordEncoder.encode("motdepasse123"));
+    user.setRole(role);
+    userRepository.save(user);
 
-        String loginBody = """
+    String loginBody =
+        """
         {"email":"%s","password":"motdepasse123"}
-        """.formatted(email);
+        """
+            .formatted(email);
 
-        MvcResult result = mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody))
-                .andExpect(status().isOk())
-                .andReturn();
+    MvcResult result =
+        mockMvc
+            .perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(loginBody))
+            .andExpect(status().isOk())
+            .andReturn();
 
-        JsonNode json = OBJECT_MAPPER.readTree(result.getResponse().getContentAsString());
-        return json.get("token").asText();
-    }
+    JsonNode json = OBJECT_MAPPER.readTree(result.getResponse().getContentAsString());
+    return json.get("token").asText();
+  }
 
-    private Room createRoom() {
-        Room room = new Room();
-        room.setNumber("A1");
-        room.setCapacity(50);
-        return roomRepository.save(room);
-    }
+  private Room createRoom() {
+    Room room = new Room();
+    room.setNumber("A1");
+    room.setCapacity(50);
+    return roomRepository.save(room);
+  }
 
-    @Test
-    void getSeatsShouldRequireAuthentication() throws Exception {
-        Room room = createRoom();
-        mockMvc.perform(get("/seats").param("roomId", room.getId().toString()))
-                .andExpect(status().isForbidden());
-    }
+  @Test
+  void getSeatsShouldRequireAuthentication() throws Exception {
+    Room room = createRoom();
+    mockMvc
+        .perform(get("/seats").param("roomId", room.getId().toString()))
+        .andExpect(status().isForbidden());
+  }
 
-    @Test
-    void clientShouldNotCreateSeat() throws Exception {
-        Room room = createRoom();
-        String token = createUserAndLogin("client-seat-test@cinema.com", UserRole.CLIENT);
+  @Test
+  void clientShouldNotCreateSeat() throws Exception {
+    Room room = createRoom();
+    String token = createUserAndLogin("client-seat-test@cinema.com", UserRole.CLIENT);
 
-        mockMvc.perform(put("/seats")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                {"number":"A1-01","room":{"id":"%s"}}
-                """.formatted(room.getId())))
-                .andExpect(status().isForbidden());
-    }
+    mockMvc
+        .perform(
+            put("/seats")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {"number":"A1-01","room":{"id":"%s"}}
+                    """
+                        .formatted(room.getId())))
+        .andExpect(status().isForbidden());
+  }
 
-    @Test
-    void managerShouldCreateSeat() throws Exception {
-        Room room = createRoom();
-        String token = createUserAndLogin("manager-seat-test@cinema.com", UserRole.MANAGER);
+  @Test
+  void managerShouldCreateSeat() throws Exception {
+    Room room = createRoom();
+    String token = createUserAndLogin("manager-seat-test@cinema.com", UserRole.MANAGER);
 
-        mockMvc.perform(put("/seats")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                {"number":"A1-01","room":{"id":"%s"}}
-                """.formatted(room.getId())))
-                .andExpect(status().isOk());
-    }
+    mockMvc
+        .perform(
+            put("/seats")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {"number":"A1-01","room":{"id":"%s"}}
+                    """
+                        .formatted(room.getId())))
+        .andExpect(status().isOk());
+  }
 }

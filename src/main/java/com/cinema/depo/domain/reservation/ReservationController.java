@@ -15,30 +15,32 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RequestMapping("/reservations")
 public class ReservationController {
-    private final ReservationRepository reservationRepository;
+  private final ReservationRepository reservationRepository;
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<Reservation>> getReservations() {
-        return ResponseEntity.ok(reservationRepository.findAll());
-    }
+  @GetMapping
+  @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+  public ResponseEntity<List<Reservation>> getReservations() {
+    return ResponseEntity.ok(reservationRepository.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationById(
-            @PathVariable UUID id, @AuthenticationPrincipal User currentUser) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow();
-        boolean isOwner = reservation.getUser().getId().equals(currentUser.getId());
-        boolean isStaff = currentUser.getRole().name().equals("MANAGER")
-                || currentUser.getRole().name().equals("EMPLOYEE");
-        if (!isOwner && !isStaff) {
-            return ResponseEntity.status(403).build(); // un CLIENT ne voit que SA réservation
-        }
-        return ResponseEntity.ok(reservation);
+  @GetMapping("/{id}")
+  public ResponseEntity<Reservation> getReservationById(
+      @PathVariable UUID id, @AuthenticationPrincipal User currentUser) {
+    Reservation reservation = reservationRepository.findById(id).orElseThrow();
+    boolean isOwner = reservation.getUser().getId().equals(currentUser.getId());
+    boolean isStaff =
+        currentUser.getRole().name().equals("MANAGER")
+            || currentUser.getRole().name().equals("EMPLOYEE");
+    if (!isOwner && !isStaff) {
+      return ResponseEntity.status(403).build(); // un CLIENT ne voit que SA réservation
     }
+    return ResponseEntity.ok(reservation);
+  }
 
-    @PutMapping
-    @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER')")
-    public ResponseEntity<Reservation> createOrUpdateReservation(@RequestBody Reservation reservation) {
-        return ResponseEntity.ok(reservationRepository.save(reservation));
-    }
+  @PutMapping
+  @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER')")
+  public ResponseEntity<Reservation> createOrUpdateReservation(
+      @RequestBody Reservation reservation) {
+    return ResponseEntity.ok(reservationRepository.save(reservation));
+  }
 }

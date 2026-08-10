@@ -14,20 +14,18 @@ import lombok.Setter;
 @NoArgsConstructor
 public class User {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+  @Id @GeneratedValue private UUID id;
 
-    private String firstName;
-    private String lastName;
-    private LocalDate birthdate;
+  private String firstName;
+  private String lastName;
+  private LocalDate birthdate;
 
-    @Column(unique = true)
-    private String email;
+  @Column(unique = true)
+  private String email;
 
-    private String password;
-    private String phone;
+  private String password;
+  private String phone;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+  @Enumerated(EnumType.STRING)
+  private UserRole role;
 }
