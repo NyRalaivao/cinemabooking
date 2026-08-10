@@ -1,5 +1,6 @@
 package com.cinema.depo.domain.room;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +15,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Room {
-
   @Id @GeneratedValue private UUID id;
-
   private String number;
   private int capacity;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Seat> seats = new ArrayList<>();
 }
